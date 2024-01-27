@@ -14,13 +14,18 @@ func RunRouter() {
 	router := gin.Default()
 
 	// Роуты.
-	// тест
-	router.GET("/ping/:value", handler.Ping)
-	// Users
-	//router.GET("/users/:id", handler.GetUsers)
-	//router.POST("/users", handler.CreateUser)
-	// Posts
-	//router.POST("/post", handler.CreatePost)
+	// User CRUD
+	router.GET("/user/:id", handler.GetUser)
+	router.DELETE("/user/:id", handler.DeleteUser)
+	router.POST("/user", handler.CreateUser)
+	// Get all Users
+	router.GET("/users", handler.GetUsers)
+	// Posts CRUD
+	router.GET("/post/:id", handler.GetPost)
+	router.DELETE("/post/:id", handler.DeletePost)
+	router.POST("/post", handler.CreatePost)
+	// Get all Posts
+	router.GET("/posts", handler.GetPosts)
 
 	// Запускаем сервер.
 	log.Fatal(router.Run(":8080"))

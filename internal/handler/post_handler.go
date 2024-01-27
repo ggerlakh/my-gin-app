@@ -6,9 +6,41 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // Функции для обработки запросов для модели Post (пример создания поста)
+// GetPost возвращает конкретный пост по id
+func GetPost(c *gin.Context) {
+	var post model.Post
+	input_post_id := c.Params.ByName("id")
+	if err := database.DB.First(&post, input_post_id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	c.JSON(http.StatusOK, post)
+}
+
+// GetPosts возвращает список всех пользователей.
+func GetPosts(c *gin.Context) {
+	var posts []model.Post
+	if err := database.DB.Find(&posts).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{"posts": posts})
+}
+
 // CreatePost создает новую публикацию.
 func CreatePost(c *gin.Context) {
 	// Пример валидации входных данных.
@@ -30,4 +62,15 @@ func CreatePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": post})
+}
+
+// DeletePost удалить пост по id.
+func DeletePost(c *gin.Context) {
+	var post model.Post
+	input_post_id := c.Params.ByName("id")
+	// Создание пользователя.
+	if err := database.DB.Delete(&post, input_post_id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.String(200, "Post deleted")
 }

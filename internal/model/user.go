@@ -1,12 +1,10 @@
 package model
 
-import "gorm.io/gorm"
-
 // User представляет модель пользователя для БД.
 type User struct {
-	gorm.Model
-	Id    uint64
+	//gorm.Model
+	Id    uint64 `gorm:"primaryKey"`
 	Name  string
 	Email string `gorm:"unique"`
-	Posts []Post
+	Posts []Post `gorm:"foreignKey:UserID"`
 }

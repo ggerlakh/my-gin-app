@@ -16,9 +16,17 @@ func Initialize(dsn string) error {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
-		//panic("Не удалось подключиться к базе данных")
 	}
-
+	// Создаем схему приложения
+	err = DB.Exec("CREATE SCHEMA IF NOT EXISTS my_gin_app;").Error
+	if err != nil {
+		return err
+	}
+	// Переходим в созданную сему приложения
+	err = DB.Exec("SET search_path TO my_gin_app;").Error
+	if err != nil {
+		return err
+	}
 	// Автоматическое создание таблиц на основе моделей.
 	DB.AutoMigrate(&model.User{}, &model.Post{})
 	return nil

@@ -1,10 +1,9 @@
 package model
 
-import "gorm.io/gorm"
-
 // Post представляет собой модель публикации для БД.
 type Post struct {
-	gorm.Model
+	//gorm.Model
+	Id      uint64 `gorm:"primaryKey"`
 	Title   string
 	Content string
 	UserID  uint
